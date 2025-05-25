@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RippleXP — Sign Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-card: #1e1e1e;
+      --purple-primary: #6b46c1;
+      --purple-dark: #553c9a;
+      --purple-light: #8b5cf6;
+      --purple-glow: rgba(139, 92, 246, 0.3);
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border: #2d2d2d;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 30% 40%, var(--purple-glow) 0%, transparent 50%),
+        radial-gradient(circle at 70% 60%, var(--purple-glow) 0%, transparent 50%);
+      animation: backgroundWave 8s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes backgroundWave {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.1) rotate(2deg); }
+    }
+
+    .signup-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 2rem;
+      padding: 3rem;
+      width: 100%;
+      max-width: 500px;
+      min-height: 600px; /* Add minimum height */
+      box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        0 0 50px var(--purple-glow);
+      animation: slideInScale 0.8s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .signup-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--purple-primary), var(--purple-light), var(--purple-primary));
+      background-size: 200% 100%;
+      animation: gradientSlide 3s ease-in-out infinite;
+    }
+
+    @keyframes gradientSlide {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    @keyframes slideInScale {
+      from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .signup-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    .signup-header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--text-primary), var(--purple-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      animation: headerGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes headerGlow {
+      from { filter: drop-shadow(0 0 10px var(--purple-glow)); }
+      to { filter: drop-shadow(0 0 20px var(--purple-light)); }
+    }
+
+    .signup-header p {
+      color: var(--text-secondary);
+      font-size: 1.125rem;
+      font-weight: 300;
+    }
+
+    .signup-form {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .form-group label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .form-group input {
+      padding: 1.25rem 1.5rem;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: 1rem;
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--purple-primary);
+      box-shadow: 0 0 0 3px var(--purple-glow);
+      transform: translateY(-2px);
+    }
+
+    .form-group input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .btn {
+      padding: 1.25rem 2rem;
+      border: none;
+      border-radius: 1rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple-primary), var(--purple-dark));
+      color: var(--text-primary);
+      box-shadow: 0 8px 25px var(--purple-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px var(--purple-glow);
+    }
+
+    .status-message {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      border-radius: 1rem;
+      font-weight: 500;
+      text-align: center;
+      animation: slideInUp 0.5s ease-out;
+    }
+
+    .status-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .status-error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 2rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      justify-content: center;
+      animation: fadeInUp 0.8s ease-out 0.6s both;
+    }
+
+    .back-link:hover {
+      color: var(--purple-light);
+      transform: translateX(-5px);
+    }
+
+    .features {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      animation: fadeInUp 0.8s ease-out 0.8s both;
+    }
+
+    .features h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      transition: all 0.3s ease;
+    }
+
+    .feature-item:hover {
+      color: var(--text-primary);
+      transform: translateX(5px);
+    }
+
+    .feature-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: var(--success);
+      flex-shrink: 0;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+        align-items: flex-start; /* Change from center to flex-start */
+        padding-top: 2rem; /* Add top padding */
+      }
+
+      .signup-container {
+        padding: 2rem;
+        min-height: auto; /* Remove min-height on mobile */
+      }
+
+      .signup-header h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-container">
+    <div class="signup-header">
+      <h1>🚀 Join RippleXP</h1>
+      <p>Create your account and start making ripples of change</p>
+    </div>
+
+    <form id="signup-form" class="signup-form">
+      <div class="form-group">
+        <label for="signup-email">Email Address</label>
+        <input type="email" id="signup-email" placeholder="Enter your email" required />
+      </div>
+      
+      <div class="form-group">
+        <label for="signup-password">Password</label>
+        <input type="password" id="signup-password" placeholder="Create a secure password" required />
+      </div>
+      
+      <button type="submit" class="btn btn-primary">
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+        </svg>
+        Create Account
+      </button>
+    </form>
+
+    <div id="signup-status" class="status-message" style="display: none;"></div>
+
+    <a class="back-link" href="index.html">
+      <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
+      </svg>
+      Back to Login
+    </a>
+
+    <div class="features">
+      <h3>What You'll Get</h3>
+      <div class="features-list">
+        <div class="feature-item">
+          <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          <span>Access to community events</span>
+        </div>
+        <div class="feature-item">
+          <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          <span>Earn XP for participation</span>
+        </div>
+        <div class="feature-item">
+          <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          <span>Track your impact</span>
+        </div>
+        <div class="feature-item">
+          <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          <span>Compete on leaderboards</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxo5uTUgs5mUEMGTv95uqDMqwvfAKTFNE",
+      authDomain: "act-venture-app.firebaseapp.com",
+      projectId: "act-venture-app",
+      storageBucket: "act-venture-app.firebasestorage.app",
+      messagingSenderId: "469487859418",
+      appId: "1:469487859418:web:0f6f351e85f017640157e3"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const signupForm = document.getElementById('signup-form');
+    const statusText = document.getElementById('signup-status');
+
+    function showStatus(message, type) {
+      statusText.textContent = message;
+      statusText.className = `status-message status-${type}`;
+      statusText.style.display = 'block';
+    }
+
+    signupForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const email = signupForm['signup-email'].value;
+      const pass = signupForm['signup-password'].value;
+      
+      const submitBtn = signupForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" style="animation: spin 1s linear infinite;">
+          <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
+        </svg>
+        Creating Account...
+      `;
+
+      try {
+        const cred = await auth.createUserWithEmailAndPassword(email, pass);
+        await db.collection('users').doc(cred.user.uid).set({ 
+          email, 
+          xp: 0, 
+          signedUpEvents: [], 
+          signUpTimes: {}, 
+          attendanceProofs: {} 
+        });
+        
+        showStatus('✅ Account created! Redirecting...', 'success');
+        setTimeout(() => { 
+          window.location.href = 'index.html'; 
+        }, 1500);
+      } catch(err) {
+        showStatus('❌ ' + err.message, 'error');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      }
+    });
+  </script>
+</body>
+</html>

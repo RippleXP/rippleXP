@@ -1,0 +1,618 @@
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RippleXP — My Badges</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-card: #1e1e1e;
+      --purple-primary: #6b46c1;
+      --purple-dark: #553c9a;
+      --purple-light: #8b5cf6;
+      --purple-glow: rgba(139, 92, 246, 0.3);
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border: #2d2d2d;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --gold: #fbbf24;
+      --silver: #9ca3af;
+      --bronze: #d97706;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, var(--purple-glow) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, var(--purple-glow) 0%, transparent 50%);
+      animation: backgroundPulse 8s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes backgroundPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    /* Navigation */
+    .navbar {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-brand {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--text-primary), var(--purple-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+    }
+
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      background: var(--purple-primary);
+      border-radius: 50%;
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-xp {
+      background: linear-gradient(135deg, var(--purple-primary), var(--purple-dark));
+      color: var(--text-primary);
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .account-dropdown {
+      position: relative;
+    }
+
+    .account-btn {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .account-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--purple-primary);
+    }
+
+    .account-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.5rem 0;
+      min-width: 150px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      display: none;
+      z-index: 1000;
+    }
+
+    .account-menu a {
+      display: block;
+      padding: 0.5rem 1rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .account-menu a:hover {
+      background: var(--bg-secondary);
+    }
+
+    /* Main Content */
+    .main-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .page-header {
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+
+    .page-title {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gold), var(--text-primary), var(--purple-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.125rem;
+    }
+
+    .badges-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 2rem;
+      padding: 3rem;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px var(--purple-glow);
+    }
+
+    .badges-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--gold), var(--silver), var(--bronze), var(--purple-primary));
+      background-size: 300% 100%;
+      animation: rainbowShift 5s ease-in-out infinite;
+    }
+
+    @keyframes rainbowShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+
+    .section-description {
+      color: var(--text-secondary);
+      font-size: 1.125rem;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .badges-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .badge-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .badge-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--purple-primary), var(--purple-light));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .badge-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--purple-primary);
+      box-shadow: 0 10px 30px var(--purple-glow);
+    }
+
+    .badge-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .badge-card.gold {
+      border-color: var(--gold);
+    }
+
+    .badge-card.gold::before {
+      background: linear-gradient(90deg, var(--gold), #f59e0b);
+    }
+
+    .badge-card.silver {
+      border-color: var(--silver);
+    }
+
+    .badge-card.silver::before {
+      background: linear-gradient(90deg, var(--silver), #6b7280);
+    }
+
+    .badge-card.bronze {
+      border-color: var(--bronze);
+    }
+
+    .badge-card.bronze::before {
+      background: linear-gradient(90deg, var(--bronze), #92400e);
+    }
+
+    .badge-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .badge-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .badge-description {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+
+    .badge-requirement {
+      background: var(--bg-primary);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--purple-light);
+    }
+
+    .achievement-levels {
+      margin-top: 3rem;
+    }
+
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .level-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .level-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--purple-primary);
+    }
+
+    .level-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .level-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .level-xp {
+      color: var(--purple-light);
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-container {
+        padding: 0 1rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .nav-links {
+        gap: 1rem;
+      }
+
+      .main-content {
+        padding: 1rem;
+      }
+
+      .page-title {
+        font-size: 2rem;
+      }
+
+      .badges-section {
+        padding: 2rem;
+      }
+
+      .badges-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">🌊 RippleXP</a>
+      
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Dashboard</a></li>
+        <li><a href="quests.html" class="nav-link">Quests</a></li>
+        <li><a href="my-quests.html" class="nav-link">My Quests</a></li>
+        <li><a href="badges.html" class="nav-link active">My Badges</a></li>
+        <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+      </ul>
+
+      <div class="nav-user">
+        <div id="user-xp" class="user-xp">0 XP</div>
+        <div class="account-dropdown">
+          <button class="account-btn" onclick="toggleAccountMenu()">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+            </svg>
+            Account
+          </button>
+          <div id="account-menu" class="account-menu">
+            <a href="#" onclick="viewAccountHistory()">Account History</a>
+            <a href="#" onclick="switchAccount()">Switch Account</a>
+            <a href="#" onclick="logout()">Sign Out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1 class="page-title">🏆 My Badges</h1>
+      <p class="page-subtitle">Earn exclusive badges and showcase your achievements</p>
+    </div>
+
+    <div class="badges-section">
+      <div class="section-header">
+        <h2 class="section-title">Annual Achievement Badges</h2>
+        <p class="section-description">
+          Each year, the top three performers on the leaderboard are awarded exclusive badges that serve as a prestigious mark of their achievement. These badges not only recognize their outstanding dedication and skill but also become a prominent feature displayed proudly on their profiles. By earning one of these coveted distinctions, users gain a unique symbol of status within the community, highlighting their consistent excellence and motivating others to strive for similar recognition.
+        </p>
+      </div>
+
+      <div class="badges-grid">
+        <div class="badge-card gold">
+          <div class="badge-icon">🥇</div>
+          <h3 class="badge-title">Champion Badge</h3>
+          <p class="badge-description">Awarded to the #1 performer of the year. The ultimate recognition of excellence and dedication.</p>
+          <div class="badge-requirement">Rank #1 on Annual Leaderboard</div>
+        </div>
+
+        <div class="badge-card silver">
+          <div class="badge-icon">🥈</div>
+          <h3 class="badge-title">Excellence Badge</h3>
+          <p class="badge-description">Awarded to the #2 performer of the year. A mark of exceptional commitment and skill.</p>
+          <div class="badge-requirement">Rank #2 on Annual Leaderboard</div>
+        </div>
+
+        <div class="badge-card bronze">
+          <div class="badge-icon">🥉</div>
+          <h3 class="badge-title">Achievement Badge</h3>
+          <p class="badge-description">Awarded to the #3 performer of the year. Recognition of outstanding contribution to the community.</p>
+          <div class="badge-requirement">Rank #3 on Annual Leaderboard</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="badges-section achievement-levels">
+      <div class="section-header">
+        <h2 class="section-title">XP Achievement Levels</h2>
+        <p class="section-description">
+          Unlock special recognition badges as you accumulate XP through your community involvement and quest completion.
+        </p>
+      </div>
+
+      <div class="level-grid">
+        <div class="level-card">
+          <div class="level-icon">🌱</div>
+          <h3 class="level-title">Newcomer</h3>
+          <p class="level-xp">0 - 100 XP</p>
+        </div>
+
+        <div class="level-card">
+          <div class="level-icon">🌿</div>
+          <h3 class="level-title">Contributor</h3>
+          <p class="level-xp">100 - 500 XP</p>
+        </div>
+
+        <div class="level-card">
+          <div class="level-icon">🌳</div>
+          <h3 class="level-title">Advocate</h3>
+          <p class="level-xp">500 - 1,000 XP</p>
+        </div>
+
+        <div class="level-card">
+          <div class="level-icon">🏆</div>
+          <h3 class="level-title">Champion</h3>
+          <p class="level-xp">1,000 - 2,500 XP</p>
+        </div>
+
+        <div class="level-card">
+          <div class="level-icon">⭐</div>
+          <h3 class="level-title">Legend</h3>
+          <p class="level-xp">2,500+ XP</p>
+        </div>
+
+        <div class="level-card">
+          <div class="level-icon">💎</div>
+          <h3 class="level-title">Elite</h3>
+          <p class="level-xp">5,000+ XP</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  &lt;!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxo5uTUgs5mUEMGTv95uqDMqwvfAKTFNE",
+      authDomain: "act-venture-app.firebaseapp.com",
+      projectId: "act-venture-app",
+      storageBucket: "act-venture-app.firebasestorage.app",
+      messagingSenderId: "469487859418",
+      appId: "1:469487859418:web:0f6f351e85f017640157e3"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    function toggleAccountMenu() {
+      const menu = document.getElementById('account-menu');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function viewAccountHistory() {
+      alert('Account history feature coming soon!');
+    }
+
+    function switchAccount() {
+      auth.signOut().then(() => {
+        window.location.href = 'login.html';
+      });
+    }
+
+    function logout() {
+      auth.signOut().then(() => {
+        window.location.href = 'login.html';
+      });
+    }
+
+    window.onload = () => {
+      auth.onAuthStateChanged(async user => {
+        if (user) {
+          // Get user XP and update display
+          const userDoc = await db.collection('users').doc(user.uid).get();
+          const userData = userDoc.data() || {};
+          const userXP = userData.xp || 0;
+          document.getElementById('user-xp').textContent = `${userXP} XP`;
+        } else {
+          window.location.href = 'login.html';
+        }
+      });
+    };
+
+    // Close account menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const dropdown = document.querySelector('.account-dropdown');
+      const menu = document.getElementById('account-menu');
+      if (!dropdown.contains(event.target)) {
+        menu.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

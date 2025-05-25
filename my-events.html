@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Actventure — My Events</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-card: #1e1e1e;
+      --purple-primary: #6b46c1;
+      --purple-dark: #553c9a;
+      --purple-light: #8b5cf6;
+      --purple-glow: rgba(139, 92, 246, 0.3);
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border: #2d2d2d;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 30% 70%, var(--purple-glow) 0%, transparent 50%),
+        radial-gradient(circle at 70% 30%, var(--purple-glow) 0%, transparent 50%);
+      animation: backgroundDrift 10s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes backgroundDrift {
+      0%, 100% { transform: translateX(0px) translateY(0px); }
+      33% { transform: translateX(30px) translateY(-20px); }
+      66% { transform: translateX(-20px) translateY(30px); }
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: slideInDown 1s ease-out;
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--text-primary), var(--purple-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      animation: titlePulse 3s ease-in-out infinite;
+    }
+
+    @keyframes titlePulse {
+      0%, 100% { filter: drop-shadow(0 0 20px var(--purple-glow)); }
+      50% { filter: drop-shadow(0 0 30px var(--purple-light)); }
+    }
+
+    .header .subtitle {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+    }
+
+    .nav-section {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInUp 1s ease-out 0.3s both;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      text-decoration: none;
+      border-radius: 1rem;
+      font-weight: 500;
+      transition: all 0.4s ease;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, var(--purple-glow), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .nav-link:hover {
+      border-color: var(--purple-primary);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px var(--purple-glow);
+    }
+
+    .nav-link:hover::before {
+      left: 100%;
+    }
+
+    .events-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 2rem;
+      padding: 3rem;
+      box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        0 0 50px var(--purple-glow);
+      animation: slideInUp 1s ease-out 0.5s both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .events-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--purple-primary), var(--purple-light), var(--purple-primary));
+      background-size: 200% 100%;
+      animation: gradientFlow 4s ease-in-out infinite;
+    }
+
+    @keyframes gradientFlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .events-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .events-header h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .events-header p {
+      color: var(--text-secondary);
+      font-size: 1.125rem;
+    }
+
+    .event-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .event-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--purple-primary), var(--purple-light));
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+
+    .event-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--purple-primary);
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 0 30px var(--purple-glow);
+    }
+
+    .event-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .event-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .event-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+      gap: 1rem;
+    }
+
+    .event-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .event-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .status-completed {
+      background: linear-gradient(135deg, var(--success), #059669);
+      color: var(--text-primary);
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .status-pending {
+      background: linear-gradient(135deg, var(--warning), #d97706);
+      color: var(--text-primary);
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+
+    .event-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .event-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    .event-meta-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: var(--purple-light);
+    }
+
+    .event-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 1rem 1.5rem;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple-primary), var(--purple-dark));
+      color: var(--text-primary);
+      box-shadow: 0 4px 15px var(--purple-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px var(--purple-glow);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--success), #059669);
+      color: var(--text-primary);
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-success:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn:disabled {
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .proof-section {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .proof-image {
+      max-width: 100%;
+      border-radius: 1rem;
+      margin-top: 1rem;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .proof-image:hover {
+      transform: scale(1.02);
+    }
+
+    .status-message {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      animation: slideInUp 0.5s ease-out;
+    }
+
+    .status-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .status-error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .status-info {
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--purple-light);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-secondary);
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .empty-state p {
+      margin-bottom: 2rem;
+      font-size: 1.125rem;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-secondary);
+    }
+
+    .loading-spinner {
+      width: 3rem;
+      height: 3rem;
+      border: 3px solid var(--border);
+      border-top: 3px solid var(--purple-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes slideInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .event-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .event-meta {
+        grid-template-columns: 1fr;
+      }
+
+      .event-actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>📋 My Events</h1>
+      <p class="subtitle">Track your signed-up events and upload proof of attendance</p>
+    </header>
+
+    <div class="nav-section">
+      <a class="nav-link" href="index.html">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
+        </svg>
+        Return to Home
+      </a>
+    </div>
+
+    <div class="events-container">
+      <div class="events-header">
+        <h2>Your Registered Events</h2>
+        <p>Manage your event participation and upload proof of attendance</p>
+      </div>
+      
+      <div id="my-events">
+        <div class="loading-state">
+          <div class="loading-spinner"></div>
+          <p>Loading your events...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
+  <script>
+    const MAX_FILE_MB = 1;
+    const MAX_FILE_BYTES = MAX_FILE_MB * 1024 * 1024;
+
+    const firebaseConfig = { apiKey: "AIzaSyDxo5uTUgs5mUEMGTv95uqDMqwvfAKTFNE", authDomain: "act-venture-app.firebaseapp.com", projectId: "act-venture-app" };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    window.onload = () => {
+      auth.onAuthStateChanged(user => {
+        if (user) loadMyEvents(user);
+        else window.location.href = "index.html";
+      });
+    };
+
+    async function loadMyEvents(user) {
+      const userRef = db.collection("users").doc(user.uid);
+      const udoc = await userRef.get();
+      const { signedUpEvents = [], signUpTimes = {} } = udoc.data();
+      const proofsSnap = await userRef.collection("proofs").get();
+      const proofMap = {};
+      proofsSnap.forEach(doc => { proofMap[doc.id] = doc.data().proof; });
+
+      const container = document.getElementById("my-events");
+      container.innerHTML = "";
+
+      if (!signedUpEvents.length) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <h3>No Events Yet</h3>
+            <p>You haven't signed up for any events yet.</p>
+            <a href="index.html" class="btn btn-primary">Browse Events</a>
+          </div>
+        `;
+        return;
+      }
+
+      for (let id of signedUpEvents) {
+        const esnap = await db.collection("events").doc(id).get();
+        if (!esnap.exists) continue;
+        const d = esnap.data();
+        const signedTime = signUpTimes[id]?.toDate?.().toLocaleString() || "";
+        const base64 = proofMap[id] || "";
+
+        const card = document.createElement("div");
+        card.className = "event-card";
+        
+        if (base64) {
+          card.innerHTML = `
+            <div class="event-header">
+              <h3 class="event-title">${d.Title || "Untitled Event"}</h3>
+              <div class="event-status status-completed">
+                <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                Completed
+              </div>
+            </div>
+            <div class="event-meta">
+              <div class="event-meta-item">
+                <svg class="event-meta-icon" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                </svg>
+                <span>${d.Date || "Date TBD"} at ${d.Time || "Time TBD"}</span>
+              </div>
+            </div>
+            <div class="event-actions">
+              <a href="event.html?id=${id}" class="btn btn-primary">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                  <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                </svg>
+                View Details
+              </a>
+            </div>
+            <div class="proof-section">
+              <div class="status-message status-success">
+                ✅ Proof uploaded successfully! You've earned all XP for this event.
+              </div>
+              <img src="${base64}" alt="Proof of attendance" class="proof-image"/>
+            </div>
+          `;
+        } else {
+          card.innerHTML = `
+            <div class="event-header">
+              <h3 class="event-title">${d.Title || "Untitled Event"}</h3>
+              <div class="event-status status-pending">
+                <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                </svg>
+                Pending Proof
+              </div>
+            </div>
+            <div class="event-meta">
+              <div class="event-meta-item">
+                <svg class="event-meta-icon" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                </svg>
+                <span>${d.Date || "Date TBD"} at ${d.Time || "Time TBD"}</span>
+              </div>
+              <div class="event-meta-item">
+                <svg class="event-meta-icon" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                </svg>
+                <span>Signed up: ${signedTime}</span>
+              </div>
+            </div>
+            <div class="event-actions">
+              <a href="event.html?id=${id}" class="btn btn-primary">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                  <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                </svg>
+                View Details
+              </a>
+              <button id="prove-${id}" class="btn btn-success">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                </svg>
+                Prove Attendance
+              </button>
+            </div>
+            <div class="status-message status-info">
+              📸 Upload a photo to prove your attendance and earn the remaining XP for this event.
+            </div>
+            <div id="status-${id}" class="status-message" style="display: none;"></div>
+          `;
+        }
+        container.appendChild(card);
+
+        if (!base64) {
+          const btn = document.getElementById(`prove-${id}`);
+          const statusEl = document.getElementById(`status-${id}`);
+          const fileInput = document.createElement("input");
+          fileInput.type = "file";
+          fileInput.accept = "image/*";
+          fileInput.style.display = "none";
+          document.body.appendChild(fileInput);
+
+          btn.addEventListener("click", () => fileInput.click());
+          fileInput.addEventListener("change", () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            if (file.size > MAX_FILE_BYTES) {
+              statusEl.textContent = `❌ File too large (${sizeMB} MB). Max is ${MAX_FILE_MB} MB.`;
+              statusEl.className = "status-message status-error";
+              statusEl.style.display = "block";
+              return;
+            }
+            statusEl.textContent = "Encoding image...";
+            statusEl.className = "status-message status-info";
+            statusEl.style.display = "block";
+            const reader = new FileReader();
+            reader.onload = async () => {
+              const encoded = reader.result;
+              statusEl.textContent = "Saving proof...";
+              try {
+                await userRef.collection("proofs").doc(id).set({ proof: encoded });
+                // Award remaining XP for proof
+                const totalXp = Number(d.XP) || 0;
+                const proofXp = totalXp - 5;
+                let message = '';
+                if (proofXp > 0) {
+                  await userRef.update({ xp: firebase.firestore.FieldValue.increment(proofXp) });
+                  message = `✅ Proof saved. You earned ${proofXp} XP for completing this event!`;
+                } else {
+                  message = '✅ Proof saved.';
+                }
+                btn.remove();
+                statusEl.innerHTML = `<p>${message}</p><img src="${encoded}" alt="Proof" class="proof-image"/>`;
+                statusEl.className = "status-message status-success";
+              } catch (err) {
+                console.error(err);
+                statusEl.textContent = `❌ ${err.message}`;
+                statusEl.className = "status-message status-error";
+              }
+            };
+            reader.readAsDataURL(file);
+          });
+        }
+      }
+    }
+  </script>
+</body>
+</html>

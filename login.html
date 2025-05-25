@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RippleXP — Sign In</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-card: #1e1e1e;
+      --purple-primary: #6b46c1;
+      --purple-dark: #553c9a;
+      --purple-light: #8b5cf6;
+      --purple-glow: rgba(139, 92, 246, 0.3);
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border: #2d2d2d;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 30% 40%, var(--purple-glow) 0%, transparent 50%),
+        radial-gradient(circle at 70% 60%, var(--purple-glow) 0%, transparent 50%);
+      animation: backgroundWave 8s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes backgroundWave {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.1) rotate(2deg); }
+    }
+
+    .login-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 2rem;
+      padding: 3rem;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        0 0 50px var(--purple-glow);
+      animation: slideInScale 0.8s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--purple-primary), var(--purple-light), var(--purple-primary));
+      background-size: 200% 100%;
+      animation: gradientSlide 3s ease-in-out infinite;
+    }
+
+    @keyframes gradientSlide {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    @keyframes slideInScale {
+      from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .login-header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--text-primary), var(--purple-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-header p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .form-group input {
+      padding: 1rem;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: 0.75rem;
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--purple-primary);
+      box-shadow: 0 0 0 3px var(--purple-glow);
+    }
+
+    .form-group input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .btn {
+      padding: 1rem;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple-primary), var(--purple-dark));
+      color: var(--text-primary);
+      box-shadow: 0 4px 15px var(--purple-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px var(--purple-glow);
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 2px solid var(--border);
+      margin-top: 1rem;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--purple-primary);
+      transform: translateY(-2px);
+    }
+
+    .status-message {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      font-weight: 500;
+      text-align: center;
+      animation: slideInUp 0.5s ease-out;
+    }
+
+    .status-error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .divider {
+      text-align: center;
+      margin: 1.5rem 0;
+      color: var(--text-muted);
+      position: relative;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider span {
+      background: var(--bg-card);
+      padding: 0 1rem;
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+
+      .login-container {
+        padding: 2rem;
+        max-width: 400px;
+      }
+
+      .login-header h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <h1>🌊 RippleXP</h1>
+      <p>Small Actions, Big Changes</p>
+    </div>
+
+    <form id="login-form" class="login-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Enter your email" required />
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required />
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Sign In</button>
+    </form>
+
+    <div class="divider">
+      <span>or</span>
+    </div>
+
+    <a href="signup.html" class="btn btn-secondary">Create New Account</a>
+
+    <div id="status" class="status-message" style="display: none;"></div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxo5uTUgs5mUEMGTv95uqDMqwvfAKTFNE",
+      authDomain: "act-venture-app.firebaseapp.com",
+      projectId: "act-venture-app",
+      storageBucket: "act-venture-app.firebasestorage.app",
+      messagingSenderId: "469487859418",
+      appId: "1:469487859418:web:0f6f351e85f017640157e3"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const loginForm = document.getElementById('login-form');
+    const statusEl = document.getElementById('status');
+
+    function showStatus(message, type) {
+      statusEl.textContent = message;
+      statusEl.className = `status-message status-${type}`;
+      statusEl.style.display = 'block';
+    }
+
+    loginForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        // Ensure user document exists
+        const user = auth.currentUser;
+        if (user) {
+          const userRef = db.collection('users').doc(user.uid);
+          const userDoc = await userRef.get();
+          if (!userDoc.exists) {
+            await userRef.set({
+              email: user.email,
+              xp: 0,
+              signedUpEvents: [],
+              signUpTimes: {}
+            });
+          }
+        }
+        window.location.href = 'index.html';
+      } catch (error) {
+        showStatus(error.message, 'error');
+      }
+    });
+
+    // Check if already logged in
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        window.location.href = 'index.html';
+      }
+    });
+  </script>
+</body>
+</html>

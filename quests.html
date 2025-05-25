@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RippleXP — Quests</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-card: #1e1e1e;
+      --purple-primary: #6b46c1;
+      --purple-dark: #553c9a;
+      --purple-light: #8b5cf6;
+      --purple-glow: rgba(139, 92, 246, 0.3);
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border: #2d2d2d;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, var(--purple-glow) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, var(--purple-glow) 0%, transparent 50%);
+      animation: backgroundPulse 8s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes backgroundPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    /* Navigation */
+    .navbar {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-brand {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--text-primary), var(--purple-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+    }
+
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      background: var(--purple-primary);
+      border-radius: 50%;
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-xp {
+      background: linear-gradient(135deg, var(--purple-primary), var(--purple-dark));
+      color: var(--text-primary);
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .logout-btn {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--purple-primary);
+    }
+
+    /* Main Content */
+    .main-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .page-header {
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+
+    .page-title {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--text-primary), var(--purple-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.125rem;
+    }
+
+    /* Filters */
+    .filters {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .filter-group label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .filter-select,
+    .filter-input {
+      padding: 0.5rem 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+    }
+
+    .filter-select:focus,
+    .filter-input:focus {
+      outline: none;
+      border-color: var(--purple-primary);
+    }
+
+    .filter-btn {
+      background: var(--purple-primary);
+      color: var(--text-primary);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover {
+      background: var(--purple-dark);
+    }
+
+    /* Quest Grid */
+    .quests-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+
+    .quest-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quest-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--purple-primary), var(--purple-light));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .quest-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--purple-primary);
+      box-shadow: 0 10px 30px var(--purple-glow);
+    }
+
+    .quest-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .quest-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .quest-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .quest-xp {
+      background: linear-gradient(135deg, var(--purple-primary), var(--purple-dark));
+      color: var(--text-primary);
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .quest-meta {
+      display: grid;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .quest-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    .quest-meta-icon {
+      width: 1rem;
+      height: 1rem;
+      color: var(--purple-light);
+    }
+
+    .quest-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      flex: 1;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple-primary), var(--purple-dark));
+      color: var(--text-primary);
+      box-shadow: 0 4px 15px var(--purple-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px var(--purple-glow);
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .btn:disabled {
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-secondary);
+    }
+
+    .loading-spinner {
+      width: 3rem;
+      height: 3rem;
+      border: 3px solid var(--border);
+      border-top: 3px solid var(--purple-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-container {
+        padding: 0 1rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .nav-links {
+        gap: 1rem;
+      }
+
+      .main-content {
+        padding: 1rem;
+      }
+
+      .page-title {
+        font-size: 2rem;
+      }
+
+      .filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .quests-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">🌊 RippleXP</a>
+      
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Dashboard</a></li>
+        <li><a href="quests.html" class="nav-link active">Quests</a></li>
+        <li><a href="my-quests.html" class="nav-link">My Quests</a></li>
+        <li><a href="badges.html" class="nav-link">My Badges</a></li>
+        <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+      </ul>
+
+      <div class="nav-user">
+        <div id="user-xp" class="user-xp">0 XP</div>
+        <button class="logout-btn" onclick="logout()">Sign Out</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <h1 class="page-title">🎯 Available Quests</h1>
+      <p class="page-subtitle">Discover events and earn XP for making a difference</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <div class="filter-group">
+        <label for="sort-filter">Sort by</label>
+        <select id="sort-filter" class="filter-select">
+          <option value="date">Date</option>
+          <option value="xp">XP Reward</option>
+          <option value="title">Title</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="type-filter">Type</label>
+        <select id="type-filter" class="filter-select">
+          <option value="">All Types</option>
+          <option value="Community Service">Community Service</option>
+          <option value="Environmental">Environmental</option>
+          <option value="Education">Education</option>
+          <option value="Health">Health</option>
+          <option value="Petitions">Petitions</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="search-filter">Search</label>
+        <input type="text" id="search-filter" class="filter-input" placeholder="Search quests...">
+      </div>
+      
+      <button class="filter-btn" onclick="applyFilters()">Apply Filters</button>
+    </div>
+
+    <!-- Quests Grid -->
+    <div id="quests-grid" class="quests-grid">
+      <div class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Loading available quests...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxo5uTUgs5mUEMGTv95uqDMqwvfAKTFNE",
+      authDomain: "act-venture-app.firebaseapp.com",
+      projectId: "act-venture-app",
+      storageBucket: "act-venture-app.firebasestorage.app",
+      messagingSenderId: "469487859418",
+      appId: "1:469487859418:web:0f6f351e85f017640157e3"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    let allQuests = [];
+    let userSignedUpEvents = [];
+
+    function logout() {
+      auth.signOut().then(() => {
+        window.location.href = 'login.html';
+      });
+    }
+
+    window.onload = () => {
+      auth.onAuthStateChanged(async user => {
+        if (user) {
+          await loadQuests(user);
+        } else {
+          window.location.href = 'login.html';
+        }
+      });
+    };
+
+    async function loadQuests(user) {
+      try {
+        // Get user data
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        const userData = userDoc.data() || {};
+        const userXP = userData.xp || 0;
+        userSignedUpEvents = userData.signedUpEvents || [];
+
+        // Update XP display
+        document.getElementById('user-xp').textContent = `${userXP} XP`;
+
+        // Get all events
+        const eventsSnapshot = await db.collection('events').get();
+        allQuests = [];
+        eventsSnapshot.forEach(doc => {
+          allQuests.push({ id: doc.id, type: 'event', ...doc.data() });
+        });
+
+        // Get all petitions
+        const petitionsSnapshot = await db.collection('petitions').get();
+        petitionsSnapshot.forEach(doc => {
+          const data = doc.data();
+          allQuests.push({ 
+            id: doc.id, 
+            type: 'petition',
+            Type: 'Petitions',
+            Title: data.Title,
+            Location: data.Location,
+            XP: data.XP,
+            Signatures: data.Signatures,
+            ...data 
+          });
+        });
+
+        renderQuests(allQuests);
+
+      } catch (error) {
+        console.error('Error loading quests:', error);
+        document.getElementById('quests-grid').innerHTML = `
+          <div class="loading-state">
+            <p>Error loading quests. Please refresh the page.</p>
+          </div>
+        `;
+      }
+    }
+
+    function renderQuests(quests) {
+      const grid = document.getElementById('quests-grid');
+      
+      if (quests.length === 0) {
+        grid.innerHTML = `
+          <div class="loading-state">
+            <p>No quests found matching your criteria.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = quests.map(quest => {
+        const isSignedUp = userSignedUpEvents.includes(quest.id);
+        const xpValue = Number(quest.XP) || 0;
+        
+        return `
+          <div class="quest-card">
+            <div class="quest-header">
+              <h3 class="quest-title">${quest.Title || 'Untitled Quest'}</h3>
+              <div class="quest-xp">+${xpValue} XP</div>
+            </div>
+            
+            <div class="quest-meta">
+              <div class="quest-meta-item">
+                <svg class="quest-meta-icon" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                </svg>
+                <span>${quest.Date || 'Date TBD'}</span>
+              </div>
+              
+              <div class="quest-meta-item">
+                <svg class="quest-meta-icon" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                </svg>
+                <span>${quest.Time || 'Time TBD'}</span>
+              </div>
+              
+              <div class="quest-meta-item">
+                <svg class="quest-meta-icon" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>${quest.Location || 'Location TBD'}</span>
+              </div>
+              
+              ${quest.Type ? `
+                <div class="quest-meta-item">
+                  <svg class="quest-meta-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1V8zm8 0a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1V8z" clip-rule="evenodd"></path>
+                  </svg>
+                  <span>${quest.Type}</span>
+                </div>
+              ` : ''}
+            </div>
+            
+            <div class="quest-actions">
+              ${isSignedUp ? 
+                `<button class="btn btn-secondary" disabled>✓ Already Signed Up</button>` : 
+                `<a href="event.html?id=${quest.id}" class="btn btn-primary">View Details</a>`
+              }
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function applyFilters() {
+      const sortBy = document.getElementById('sort-filter').value;
+      const typeFilter = document.getElementById('type-filter').value;
+      const searchTerm = document.getElementById('search-filter').value.toLowerCase();
+
+      let filteredQuests = [...allQuests];
+
+      // Apply type filter
+      if (typeFilter) {
+        filteredQuests = filteredQuests.filter(quest => 
+          quest.Type && quest.Type.toLowerCase().includes(typeFilter.toLowerCase())
+        );
+      }
+
+      // Apply search filter
+      if (searchTerm) {
+        filteredQuests = filteredQuests.filter(quest => 
+          (quest.Title && quest.Title.toLowerCase().includes(searchTerm)) ||
+          (quest.Description && quest.Description.toLowerCase().includes(searchTerm)) ||
+          (quest.Location && quest.Location.toLowerCase().includes(searchTerm))
+        );
+      }
+
+      // Apply sorting
+      filteredQuests.sort((a, b) => {
+        switch (sortBy) {
+          case 'xp':
+            return (Number(b.XP) || 0) - (Number(a.XP) || 0);
+          case 'title':
+            return (a.Title || '').localeCompare(b.Title || '');
+          case 'date':
+          default:
+            return (a.Date || '').localeCompare(b.Date || '');
+        }
+      });
+
+      renderQuests(filteredQuests);
+    }
+
+    // Auto-apply filters on input change
+    document.getElementById('search-filter').addEventListener('input', applyFilters);
+    document.getElementById('sort-filter').addEventListener('change', applyFilters);
+    document.getElementById('type-filter').addEventListener('change', applyFilters);
+  </script>
+</body>
+</html>
